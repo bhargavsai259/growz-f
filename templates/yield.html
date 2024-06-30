@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>ML API</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <style>
+         body {
+         background-image: url('crop.jpeg');
+         }
+      </style>
+   </head>
+   <body class="bg-light">
+      <div class="container mt-5">
+         <div class="login card p-4">
+            <h1 class="text-center mb-4"> Crop yield acquired prediction</h1>
+            <h5 class="text-center">(Enter parameters received and click Predict to get the result.)</h5>
+            <!-- Main Input For Receiving Query to our ML -->
+            <form action="{{ url_for('yieldpredict')}}" method="post">
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <select class="form-control"  name="Crop" required="required">
+                           <option value=0>Select crop</option>
+                           <option value=2>Arhar/Tur</option>
+                           <option value=3>Bajra</option>
+                           <option value=4>Banana</option>
+                           <option value=5>Barley</option>
+                           <option value=6>Black pepper</option>
+                           <option value=7>Cardamom</option>
+                           <option value=8>Cashew nut</option>
+                           <option value=9>Castor seed</option>
+                           <option value=10>Coconut</option>
+                           <option value=11>Coriander</option>
+                           <option value=12>Cotton (lint)</option>
+                           <option value=13>Cowpea (lobia)</option>
+                           <option value=14>Dry chillies</option>
+                           <option value=15>Garlic</option>
+                           <option value=16>Ginger</option>
+                           <option value=17>Gram</option>
+                           <option value=18>Groundnut</option>
+                           <option value=19>Guar seed</option>
+                           <option value=20>Horse-gram</option>
+                           <option value=21>Jowar</option>
+                           <option value=22>Jute</option>
+                           <option value=23>Khesari</option>
+                           <option value=24>Linseed</option>
+                           <option value=25>Maize</option>
+                           <option value=26>Masoor</option>
+                           <option value=27>Mesta</option>
+                           <option value=28>Moong (green gram)</option>
+                           <option value=29>Moth</option>
+                           <option value=30>Niger seed</option>
+                           <option value=31>Oilseeds total</option>
+                           <option value=32>Onion</option>
+                           <option value=33>Other 3 pulses</option>
+                           <option value=34>Other 2 pulses</option>
+                           <option value=35>Other 4 pulses</option>
+                           <option value=36>Other cereals</option>
+                           <option value=37>Other oilseeds</option>
+                           <option value=38>Peas & beans (pulses)</option>
+                           <option value=39>Potato</option>
+                           <option value=40>Ragi</option>
+                           <option value=41>Rapeseed & Mustard</option>
+                           <option value=42>Rice</option>
+                           <option value=43>Safflower</option>
+                           <option value=44>Sannhamp</option>
+                           <option value=45>Sesamum</option>
+                           <option value=46>Small millets</option>
+                           <option value=47>Soybean</option>
+                           <option value=48>Sugarcane</option>
+                           <option value=49>Sunflower</option>
+                           <option value=50>Sweet potato</option>
+                           <option value=51>Tapioca</option>
+                           <option value=52>Tobacco</option>
+                           <option value=53>Turmeric</option>
+                           <option value=54>Urad</option>
+                           <option value=55>Wheat</option>
+                           <!-- Add more crop options as needed -->
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control"  name="Crop_year" required="required">
+                           <option value=0>Select Year</option>
+
+                           <option value=1997>1997</option>
+                           <option value=1998>1998</option>
+                           <option value=1999>1999</option>
+                           <option value=2000>2000</option>
+                           <option value=2001>2001</option>
+                           <option value=2002>2002</option>
+                           <option value=2003>2003</option>
+                           <option value=2004>2004</option>
+                           <option value=2005>2005</option>
+                           <option value=2006>2006</option>
+                           <option value=2007>2007</option>
+                           <option value=2008>2008</option>
+                           <option value=2009>2009</option>
+                           <option value=2010>2010</option>
+                           <option value=2011>2011</option>
+                           <option value=2012>2012</option>
+                           <option value=2013>2013</option>
+                           <option value=2014>2014</option>
+                           <option value=2015>2015</option>
+                           <option value=2016>2016</option>
+                           <option value=2017>2017</option>
+                           <option value=2018>2018</option>
+                           <option value=2019>2019</option>
+                           <option value=2020>2020</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control"  name="Season" required="required">
+                           <option value=0>Select Season</option>
+
+                           <option value=1>Autumn</option>
+                           <option value=2>Kharif</option>
+                           <option value=3>Rabi</option>
+                           <option value=4>Summer</option>
+                           <option value=5>Whole Year</option>
+                           <option value=6>Winter</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control" id="soil" name="State" required="required">
+                           <option value=0>Select State</option>
+
+                           <option value=1>Andhra Pradesh</option>
+                           <option value=2>Arunachal Pradesh</option>
+                           <option value=3>Assam</option>
+                           <option value=4>Bihar</option>
+                           <option value=5>Chhattisgarh</option>
+                           <option value=6>Delhi</option>
+                           <option value=7>Goa</option>
+                           <option value=8>Gujarat</option>
+                           <option value=9>Haryana</option>
+                           <option value=10>Himachal Pradesh</option>
+                           <option value=11>Jammu and Kashmir</option>
+                           <option value=12>Jharkhand</option>
+                           <option value=13>Karnataka</option>
+                           <option value=14>Kerala</option>
+                           <option value=15>Madhya Pradesh</option>
+                           <option value=16>Maharashtra</option>
+                           <option value=17>Manipur</option>
+                           <option value=18>Meghalaya</option>
+                           <option value=19>Mizoram</option>
+                           <option value=20>Nagaland</option>
+                           <option value=21>Odisha</option>
+                           <option value=22>Puducherry</option>
+                           <option value=23>Punjab</option>
+                           <option value=24>Sikkim</option>
+                           <option value=25>Tamil Nadu</option>
+                           <option value=26>Telangana</option>
+                           <option value=27>Tripura</option>
+                           <option value=28>Uttar Pradesh</option>
+                           <option value=29>Uttarakhand</option>
+                           <option value=30>West Bengal</option>
+                        </select>
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Area" placeholder="Area (in hectares)" required="required" />
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     
+                     
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Production" placeholder="Production (in tonnes)" required="required" />
+                     </div>
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Annual_Rainfall" placeholder="Annual Rainfall (in mm)" required="required" />
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Fertilizer" placeholder="Fertilizer (in kg)" required="required" />
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Pesticide" placeholder="Pesticide (in kg)" required="required" />
+                     </div>
+                  </div>
+               </div>
+               <button type="submit" class="btn btn-primary btn-block btn-lg">Predict</button>
+            </form>
+            <div class="mt-3">
+               {{ prediction_text }}
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   </body>
+</html>

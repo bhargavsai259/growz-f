@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>ML API</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <style>
+         body {
+         background-image: url('crop.jpeg');
+         }
+      </style>
+   </head>
+   <body class="bg-light">
+      <div class="container mt-5">
+         <div class="login card p-4">
+            <h1 class="text-center mb-4"> 
+               పంట దిగుబడి అంచనా </h1>
+            <h5 class="text-center">(అందుకున్న పారామితులను నమోదు చేసి, ఫలితాన్ని పొందడానికి ప్రిడిక్ట్ క్లిక్ చేయండి) </h5>
+            
+            <!-- Main Input For Receiving Query to our ML -->
+            <form action="{{ url_for('yieldpredicttelugu')}}" method="post">
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <select class="form-control"  name="Crop" required="required">
+                           <option value=0>పంట ఎంచుకోండి</option>
+                           <option value=2>తొరలు/కంది</option>
+                           <option value=3>బాజరా</option>
+                           <option value=4>ఆరటి</option>
+                           <option value=5>బార్లీ</option>
+                           <option value=6>ఎండు మిరియాలు</option>
+                           <option value=7>ఏలకులు</option>
+                           <option value=8>జీడి విట్టు</option>
+                           <option value=9>ఆవు విత్తు</option>
+                           <option value=10>కొబ్బరి</option>
+                           <option value=11>కొత్తిమీర</option>
+                           <option value=12>బర్లీ (లింట్)</option>
+                           <option value=13>అల్షిదాలు (లోబియా)</option>
+                           <option value=14>ఒక్క మిరపకాయలు</option>
+                           <option value=15>వెల్లుల్లి</option>
+                           <option value=16>అల్లం</option>
+                           <option value=17>సెనగలు</option>
+                           <option value=18>పల్లి</option>
+                           <option value=19>గోరుచిక్కు</option>
+                           <option value=20>హర్స్-గ్రామ్</option>
+                           <option value=21>జొన్న</option>
+                           <option value=22>జూట్</option>
+                           <option value=23>ఖేసరి</option>
+                           <option value=24>నూలు</option>
+                           <option value=25>మక్క</option>
+                           <option value=26>మసుర్</option>
+                           <option value=27>మెస్త</option>
+                           <option value=28>పెసరు (పచ్చ పెసలు)</option>
+                           <option value=29>మొత్</option>
+                           <option value=30>నైజర్ విత్తు</option>
+                           <option value=31>ఆయిల్సీడ్స్ మొత్తం</option>
+                           <option value=32>ఉల్లిపాయ</option>
+                           <option value=33>ఇతర 3 పప్పులు</option>
+                           <option value=34>ఇతర 2 పప్పులు</option>
+                           <option value=35>ఇతర 4 పప్పులు</option>
+                           <option value=36>ఇతర ధాన్యాలు</option>
+                           <option value=37>ఇతర ఆయిల్సీడ్స్</option>
+                           <option value=38>బటనీ మరియు బీన్స్ (పప్పులు)</option>
+                           <option value=39>బంగాళదుంప</option>
+                           <option value=40>రాగి</option>
+                           <option value=41>రాప్‌సీడ్ & మస్టర్డ్</option>
+                           <option value=42>బియ్యం</option>
+                           <option value=43>కారువేపాకు</option>
+                           <option value=44>సానామ్</option>
+                           <option value=45>నువ్వులు</option>
+                           <option value=46>చిన్న చిరుగుట్లు</option>
+                           <option value=47>సోయాబీన్</option>
+                           <option value=48>చెరకు</option>
+                           <option value=49>సన్‌ఫ్లోవర్</option>
+                           <option value=50>చేమదుల</option>
+                           <option value=51>కసవ</option>
+                           <option value=52>పొగడ</option>
+                           <option value=53>పసుపు</option>
+                           <option value=54>ఉరధ్</option>
+                           <option value=55>గోధుమ</option>
+                            <!-- Add more crop options as needed -->
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control"  name="Crop_year" required="required">
+                           <option value=0>సంవత్సరం ఎంచుకోండి</option>
+
+                           <option value=1997>1997</option>
+                           <option value=1998>1998</option>
+                           <option value=1999>1999</option>
+                           <option value=2000>2000</option>
+                           <option value=2001>2001</option>
+                           <option value=2002>2002</option>
+                           <option value=2003>2003</option>
+                           <option value=2004>2004</option>
+                           <option value=2005>2005</option>
+                           <option value=2006>2006</option>
+                           <option value=2007>2007</option>
+                           <option value=2008>2008</option>
+                           <option value=2009>2009</option>
+                           <option value=2010>2010</option>
+                           <option value=2011>2011</option>
+                           <option value=2012>2012</option>
+                           <option value=2013>2013</option>
+                           <option value=2014>2014</option>
+                           <option value=2015>2015</option>
+                           <option value=2016>2016</option>
+                           <option value=2017>2017</option>
+                           <option value=2018>2018</option>
+                           <option value=2019>2019</option>
+                           <option value=2020>2020</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control"  name="Season" required="required">
+                           <option value=0>ఋతువు ఎంచుకోండి</option>
+                           <option value=1>శిశిరం</option>
+                           <option value=2>ఖరీఫ్</option>
+                           <option value=3>రబీ</option>
+                           <option value=4>గ్రీష్మం</option>
+                           <option value=5>సంపూర్ణ సంవత్సరం</option>
+                           <option value=6>శీతం</option>
+                           
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control" id="soil" name="State" required="required">
+                           <option value=0>రాష్ట్రం ఎంచుకోండి</option>
+                           <option value=1>ఆంధ్రప్రదేశ్</option>
+                           <option value=2>అరుణాచలప్రదేశ్</option>
+                           <option value=3>అస్సాం</option>
+                           <option value=4>బిహార్</option>
+                           <option value=5>ఛత్తీస్‌గఢ్</option>
+                           <option value=6>ఢెల్హి</option>
+                           <option value=7>గోవా</option>
+                           <option value=8>గుజరాత్</option>
+                           <option value=9>హరియాణా</option>
+                           <option value=10>హిమాచల ప్రదేశ్</option>
+                           <option value=11>జమ్మూ కాశ్మీర్</option>
+                           <option value=12>ఝార్ఖండ్</option>
+                           <option value=13>కర్నాటక</option>
+                           <option value=14>కేరళ</option>
+                           <option value=15>మధ్య ప్రదేశ్</option>
+                           <option value=16>మహారాష్ట్ర</option>
+                           <option value=17>మణిపుర్</option>
+                           <option value=18>మేఘాలయ</option>
+                           <option value=19>మిజోరమ్</option>
+                           <option value=20>నాగాల్యాండ్</option>
+                           <option value=21>ఒడిషా</option>
+                           <option value=22>పుదుచ్చేరి</option>
+                           <option value=23>పంజాబ్</option>
+                           <option value=24>సిక్కిం</option>
+                           <option value=25>తమిళ నాడు</option>
+                           <option value=26>తెలంగాణ</option>
+                           <option value=27>త్రిపుర</option>
+                           <option value=28>ఉత్తర ప్రదేశ్</option>
+                           <option value=29>ఉత్తరాఖండ్</option>
+                           <option value=30>పశ్చిమ బెంగాల్</option>
+                           </select>
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="Area" placeholder="ప్రాంతం (హెక్టార్లలో)" required="required" />
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Production" placeholder="ఉత్పాదన (టన్లలో)" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Annual_Rainfall" placeholder="సంవత్సర వర్షాకాలం (మిమ్ములలో)" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Fertilizer" placeholder="ఎరువుల యాక్సమిడ్ (కిలోలలో)" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Pesticide" placeholder="కీటనాశకం (కిలోలలో)" required="required" />
+                        </div>
+                    </div>
+                    </div>
+               </div>
+               <button type="submit" class="btn btn-primary btn-block btn-lg">Predict</button>
+            </form>
+            <div class="mt-3">
+               {{ prediction_text }}
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   </body>
+</html>

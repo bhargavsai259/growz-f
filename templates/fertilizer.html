@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+      body {
+        background-image: url('crop.jpeg');
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="login card p-4">
+        <h1 class="text-center mb-4">Fertilizer recommendation</h1>
+        <h5 class="text-center">(Enter parameters received and click Predict to get the result.)</h5>
+        <!-- Main Input For Receiving Query to our ML -->
+        <form action="{{ url_for('fertilizerpredict')}}" method="post">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control" name="Temperature" placeholder="Temperature (°C)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Humidity" placeholder="Humidity (%)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Soil Moisture" placeholder="Soil Moisture (%)" required="required" />
+              </div>
+              <div class="form-group">
+                <select class="form-control" id="soil" name="Soil Type" required="required">
+                  <option value=0>Select Soil Type</option>
+                  <option value=1>Sandy</option>
+                  <option value=2>Loamy</option>
+                  <option value=3>Black</option>
+                  <option value=4>Red</option>
+                  <option value=5>Clayey</option>
+                  <!-- Add more soil type options as needed -->
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <select class="form-control" id="crop" name="Crop Type" required="required">
+                  <option value=0>Select a crop</option>
+                  <option value=1>Maize</option>
+                  <option value=2>SugarCane</option>
+                  <option value=3>Cotton</option>
+                  <option value=4>Tobacco</option>
+                  <option value=5>Paddy</option>
+                  <option value=6>Barley</option>
+                  <option value=7>Millets</option>
+                  <option value=8>Oil seeds</option>
+                  <option value=9>Pulses</option>
+                  <option value=10>Wheat</option>
+                  <option value=11>Ground Nuts</option>
+                  <!-- Add more crop options as needed -->
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Nitrogen" placeholder="N (Nitrogen) (in %)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Potassium" placeholder="P (Potassium) (in %)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Phosphorous" placeholder="P (Phosphorous) (in %)" required="required" />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">Predict</button>
+        </form>
+
+        <style>
+          .modal {
+              display: none;
+              position: fixed;
+              z-index: 1;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              overflow: auto;
+              background-color: rgba(0, 0, 0, 0.4);
+          }
+      
+          .modal-content {
+              background-color: #fefefe;
+              margin: 15% auto;
+              padding: 20px;
+              border: 1px solid #888;
+              width: 80%;
+              max-width: 600px;
+              border-radius: 5px;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+              text-align: center;
+          }
+      
+          .modal-content p {
+              margin: 0;
+          }
+      
+          .modal-content table {
+              margin-top: 20px;
+              width: 100%;
+              border-collapse: collapse;
+          }
+      
+          .modal-content th,
+          .modal-content td {
+              padding: 8px;
+              text-align: left;
+              border-bottom: 1px solid #ddd;
+          }
+      
+          .modal-content th {
+              background-color: #f2f2f2;
+          }
+      
+          .modal-content p.crop-name {
+              margin-top: 20px;
+              font-weight: bold;
+          }
+      
+          .close {
+              color: #aaa;
+              float: right;
+              font-size: 28px;
+              font-weight: bold;
+              cursor: pointer;
+          }
+      
+          .close:hover,
+          .close:focus {
+              color: black;
+              text-decoration: none;
+              cursor: pointer;
+          }
+          table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 1rem;
+          }
+      
+          th, td {
+              padding: 0.75rem;
+              text-align: left;
+              border: 1px solid #dee2e6;
+          }
+      
+          th {
+              background-color: #f8f9fa;
+              font-weight: bold;
+          }
+      </style>
+      <!-- Modal HTML -->
+<div class="modal" id="myModal">
+  <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      {% if prediction_text %}
+          <p><strong>Entered Field Values:</strong></p>
+          <table>
+              <tr>
+                  <th>Temperature (°C)</th>
+                  <td>{{ request.form.Temperature }}</td>
+              </tr>
+              <tr>
+                  <th>Humidity (%)</th>
+                  <td>{{ request.form.Humidity }}</td>
+              </tr>
+              <tr>
+                  <th>Soil Moisture (%)</th>
+                  <td>{{ request.form["Soil Moisture"] }}</td>
+              </tr>
+              {% set soil_types = {
+                "0": "Select Soil Type",
+                "1": "Sandy",
+                "2": "Loamy",
+                "3": "Black",
+                "4": "Red",
+                "5": "Clayey"
+            } %}
+            
+            <tr>
+                <th>Soil Type</th>
+                <td>{{ soil_types[request.form["Soil Type"]] }}</td>
+            </tr>
+            
+              
+              <tr>
+                <th>Crop Type</th>
+                <td>
+                    {% set crop_names = {
+                        "0": "Select a crop",
+                        "1": "Maize",
+                        "2": "SugarCane",
+                        "3": "Cotton",
+                        "4": "Tobacco",
+                        "5": "Paddy",
+                        "6": "Barley",
+                        "7": "Millets",
+                        "8": "Oil seeds",
+                        "9": "Pulses",
+                        "10": "Wheat",
+                        "11": "Ground Nuts"
+                    } %}
+                    {{ crop_names[request.form["Crop Type"]] }}
+                </td>
+            </tr>
+            
+
+              <tr>
+                  <th>N (Nitrogen) (%)</th>
+                  <td>{{ request.form.Nitrogen }}</td>
+              </tr>
+              <tr>
+                  <th>P (Potassium) (%)</th>
+                  <td>{{ request.form.Potassium }}</td>
+              </tr>
+              <tr>
+                  <th>P (Phosphorous) (%)</th>
+                  <td>{{ request.form.Phosphorous }}</td>
+              </tr>
+          </table>
+          <p><strong>Predicted Fertilizer Name:</strong> {{ prediction_text }}</p>
+      {% endif %}
+  </div>
+</div>
+
+<script>
+                
+  // Open the modal dialog
+  function openModal() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "block";
+  }
+
+
+  // Close the modal dialog
+  function closeModal() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+  }
+
+
+// Add event listener to the form submission
+document.addEventListener("DOMContentLoaded", function() {
+// Check if the modal content is available and not empty
+var predictionText = "{{ prediction_text }}";
+
+if (predictionText !== "") {
+openModal(); // Open the modal if prediction is available
+}
+});
+
+  // Add event listener to the "Predict" button
+document.getElementById("predictButton").addEventListener("click", function() {
+openModal();
+});
+  
+</script>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

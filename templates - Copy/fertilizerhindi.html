@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+      body {
+        background-image: url('crop.jpeg');
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="login card p-4">
+        <h1 class="text-center mb-4">उर्वरक सिफारिश</h1>
+        <h5 class="text-center">(पैरामीटर दर्ज करें और परिणाम प्राप्त करने के लिए पूर्वानुमान पर क्लिक करें।)</h5>
+        <!-- Main Input For Receiving Query to our ML -->
+        <form action="{{ url_for('fertilizerpredicthindi')}}" method="post">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control" name="Temperature" placeholder="तापमान (°सेल्सियस)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Humidity" placeholder="नमी (%)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Soil Moisture" placeholder="मृदा नमी (%)" required="required" />
+              </div>
+              <div class="form-group">
+                <select class="form-control" id="soil" name="Soil Type" required="required">
+                  <option value=0>मृदा प्रकार चुनें</option>
+                  <option value=1>रेतीला</option>
+                  <option value=2>लोमी</option>
+                  <option value=3>काला</option>
+                  <option value=4>लाल</option>
+                  <option value=5>चिकना</option>
+                  <!-- Add more soil type options as needed -->
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <select class="form-control" id="crop" name="Crop Type" required="required">
+                  <option value=0>फसल चुनें</option>
+                  <option value=1>मक्का</option>
+                  <option value=2>गन्ना</option>
+                  <option value=3>कपास</option>
+                  <option value=4>तमाखू</option>
+                  <option value=5>धान</option>
+                  <option value=6>जौ</option>
+                  <option value=7>बाजरा</option>
+                  <option value=8>तिलहन</option>
+                  <option value=9>दालें</option>
+                  <option value=10>गेहूँ</option>
+                  <option value=11>मूंगफली</option>
+                  <!-- Add more crop options as needed -->
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Nitrogen" placeholder="N (नाइट्रोजन) (in %)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Potassium" placeholder="P (पोटैशियम) (in %)" required="required" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="Phosphorous" placeholder="फास्फोरस (in %)" required="required" />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">पूर्वानुमान</button>
+        </form>
+        <div class="mt-3">
+          {{ prediction_text }}
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

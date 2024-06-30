@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="te">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-image: url('crop.jpeg');
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="login card p-4">
+            <h3 class="text-center mb-4">నేల ఆరోగ్య విశ్లేషణను ఉపయోగించి పంట అంచనా</h3>
+            <h5 class="text-center">(సెన్సార్లు నుండి దొరికిన పరామితులను నమోదు చేసి, ఫలితానికి ప్రెడిక్ట్ కొరకు నొక్కండి.)</h5>
+
+            <!-- మెయిన్ ఇన్పుట్ మన ఎమ్యూల్ కు జిల్లాని గ్రహించడానికి -->
+            <form action="{{ url_for('soilpredicttelugu')}}" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="N" placeholder="N (నైట్రజన్) %" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="P" placeholder="P (పొటాషియం) %" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="K" placeholder="K (ఫాస్ఫరస్) %" required="required" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="temperature" placeholder="తాపము (°C)" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="humidity" placeholder="ఆదా (శాతం)" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="ph" placeholder="పిఎచ్ - శ్రేణి: 0 - 14" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="rainfall" placeholder="వర్షంలో వరుస (మిమీ)" required="required" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">ప్రెడిక్ట్</button>
+            </form><style>
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0, 0, 0, 0.4);
+                }
+            
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                    max-width: 600px;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                    text-align: center;
+                }
+            
+                .modal-content p {
+                    margin: 0;
+                }
+            
+                .modal-content table {
+                    margin-top: 20px;
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+            
+                .modal-content th,
+                .modal-content td {
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }
+            
+                .modal-content th {
+                    background-color: #f2f2f2;
+                }
+            
+                .modal-content p.crop-name {
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+            
+                .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+            
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 1rem;
+                }
+            
+                th, td {
+                    padding: 0.75rem;
+                    text-align: left;
+                    border: 1px solid #dee2e6;
+                }
+            
+                th {
+                    background-color: #f8f9fa;
+                    font-weight: bold;
+                }
+            </style>
+            
+            
+
+           
+            
+            <div class="modal" id="myModal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    {% if prediction_text %}
+                        <p><strong>Entered Field Values:</strong></p>
+                        <table>
+                            <tr>
+                                <th>N (Nitrogen in ppm)</th>
+                                <td>{{ request.form.N }}</td>
+                            </tr>
+                            <tr>
+                                <th>P (Potassium in ppm)</th>
+                                <td>{{ request.form.P }}</td>
+                            </tr>
+                            <tr>
+                                <th>K (Phosphorus in ppm)</th>
+                                <td>{{ request.form.K }}</td>
+                            </tr>
+                            <tr>
+                                <th>Temperature (in Celsius)</th>
+                                <td>{{ request.form.temperature }}</td>
+                            </tr>
+                            <tr>
+                                <th>Humidity (in %)</th>
+                                <td>{{ request.form.humidity }}</td>
+                            </tr>
+                            <tr>
+                                <th>pH</th>
+                                <td>{{ request.form.ph }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rainfall (in mm)</th>
+                                <td>{{ request.form.rainfall }}</td>
+                            </tr>
+                        </table>
+                        <p class="crop-name"><strong>Predicted Crop Name:</strong> {{ prediction_text }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <script>
+                // Open the modal dialog
+                function openModal() {
+                    var modal = document.getElementById("myModal");
+                    modal.style.display = "block";
+                }
+            
+                // Close the modal dialog
+                function closeModal() {
+                    var modal = document.getElementById("myModal");
+                    modal.style.display = "none";
+                }
+            
+                // Open the modal dialog when the page loads
+                document.addEventListener("DOMContentLoaded", function(event) {
+                    var predictionText = "{{ prediction_text }}";
+        
+                    if (predictionText !== "") {
+                        openModal(); // Open the modal if prediction is available
+                    }                });
+            </script>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

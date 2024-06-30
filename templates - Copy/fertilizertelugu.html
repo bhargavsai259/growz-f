@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="te">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background-image: url('crop.jpeg'); }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="login card p-4">
+            <h1 class="text-center mb-4">రసాయనాల సలహాన్ని సూచించేందుకు</h1>
+            <h5 class="text-center">(సేకరించిన పారామీటర్లను ఎంటర్ చేయండి మరియు ఫలితం పొందడానికి ప్రెడిక్ట్ క్లిక్ చేయండి.)</h5>
+            <!-- ఎంపిక స్థానం కోసం ముఖ్య ఎంటర్పు మార్గం -->
+            <form action="{{ url_for('fertilizerpredicttelugu')}}" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Temperature" placeholder="తాపము (°C)" required="required" /> </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Humidity" placeholder="ఆప్యాము (%)" required="required" /> </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Soil Moisture" placeholder="భూమి ఆరది (%)" required="required" /> </div>
+                        <div class="form-group">
+                            <select class="form-control" id="soil" name="Soil Type" required="required">
+                                <option value=0>భూమి రకం ఎంచుకోండి</option>
+                                <option value=1>సేండీ</option>
+                                <option value=2>లూమీ</option>
+                                <option value=3>నల్ల</option>
+                                <option value=4>ఎరుపు</option>
+                                <option value=5>మడియు</option>
+                                <!-- అవసరమైన భూమి రకాల ఎంపికలను ప్రామాణించండి -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <select class="form-control" id="crop" name="Crop Type" required="required">
+                                <option value=0>ఒక విత్తనం ఎంచుకోండి</option>
+                                <option value=1>మైజ్‌</option>
+                                <option value=2>చక్కెర</option>
+                                <option value=3>కాటన్</option>
+                                <option value=4>తాబాకు</option>
+                                <option value=5>నెల</option>
+                                <option value=6>బార్లి</option>
+                                <option value=7>మిల్లెట్స్</option>
+                                <option value=8>ఆయిల్ సీడ్స్‌</option>
+                                <option value=9>పల్స్‌</option>
+                                <option value=10>గోధుమ</option>
+                                <option value=11>గ్రౌండ్ నట్స్‌</option>
+                                <!-- అవసరమైన విత్తన ఎంపికలను ప్రామాణించండి -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Nitrogen" placeholder="N (నైట్రజన్) (in %)" required="required" /> </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Potassium" placeholder="P (పొటాషియం) (in %)" required="required" /> </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Phosphorous" placeholder="ఫాస్ఫారస్ (in %)" required="required" /> </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">ప్రెడిక్ట్</button>
+            </form>
+            <div class="mt-3"> {{ prediction_text }} </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
